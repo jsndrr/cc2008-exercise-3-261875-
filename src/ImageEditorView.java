@@ -9,33 +9,44 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class ImageEditorView extends JFrame {
     JPanel mainPanel = new JPanel();
     JButton loadImageButton = new JButton("Load Image");
+    JButton negativeFilterButton = new JButton("Negative");
+    JButton grayscaleFilterButton = new JButton("Grayscale");
     JFileChooser inputImageChooser = new JFileChooser();
-    FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG Images", "png");
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "png", "jpeg", "jpg");
     ImagePanel imagePanel;
 
     public ImageEditorView() {
         // We are extending the JFrame class, so we MUST call the parent constructor.
-        super("Image Editor");
+        super("Editor UVG");
 
         // orientation of main panel
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         // methods on the parent JFrame class
         setSize(800, 600);
-        setResizable(false);
+        setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         inputImageChooser.setFileFilter(filter);
 
         mainPanel.add(loadImageButton);
 
-        // add the main panel and make the window visible
+        // Filter Buttons
+        // negative, grayscale
+        mainPanel.add(negativeFilterButton);
+        mainPanel.add(grayscaleFilterButton);
+
+        // at last, add the main panel to the JFrame
         add(mainPanel);
     }
 
     // ################## A section to register action listeners ################
     public void addLoadImageListener(ActionListener listener) {
         loadImageButton.addActionListener(listener);
+    }
+
+    public void addNegativeListener(ActionListener listener) {
+        negativeFilterButton.addActionListener(listener);
     }
 
     public void addInputImageChooserListener(ActionListener listener) {

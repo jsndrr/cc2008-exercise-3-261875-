@@ -1,9 +1,7 @@
 public class ImageEditorModel {
     private String inputFileName;
     private Image inputImage;
-
-    public ImageEditorModel() {
-    }
+    private ImageEditor editor;
 
     public String getInputFileName() {
         return this.inputFileName;
@@ -19,5 +17,10 @@ public class ImageEditorModel {
 
     public void setInputImage(Image inputImage) {
         this.inputImage = inputImage;
+        this.editor = new ImageEditor(this.inputImage);
+    }
+
+    public Image negativeFilter() {
+        return this.editor.negative();
     }
 }

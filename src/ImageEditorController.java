@@ -10,6 +10,7 @@ public class ImageEditorController {
 
         // hookup action listeners
         this.view.addLoadImageListener(e -> handleLoadImage());
+        this.view.addNegativeListener(e -> handleNegativeFilter());
     }
 
     public void handleLoadImage() {
@@ -28,6 +29,16 @@ public class ImageEditorController {
 
         // we updated the state of the model, we must re-draw the view layer
         refresh();
+    }
+
+    // What do we want to do when someone presses the
+    // negative filter button?
+    private void handleNegativeFilter() {
+        Image negative = this.model.negativeFilter();
+
+        // application state changed, the view MUST be
+        // updated
+        this.view.showInputImage(ImageUtils.toBufferedImage(negative));
     }
 
     // call the view to re-draw the application state
