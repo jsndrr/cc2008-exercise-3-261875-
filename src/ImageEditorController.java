@@ -11,6 +11,8 @@ public class ImageEditorController {
         // hookup action listeners
         this.view.addLoadImageListener(e -> handleLoadImage());
         this.view.addNegativeListener(e -> handleNegativeFilter());
+        this.view.addGrayscaleListener(e -> handleGrayscaleFilter());
+        this.view.addUndoListener(e -> handleUndoButton());
     }
 
     public void handleLoadImage() {
@@ -34,11 +36,38 @@ public class ImageEditorController {
     // What do we want to do when someone presses the
     // negative filter button?
     private void handleNegativeFilter() {
-        Image negative = this.model.negativeFilter();
+        try {
+            Image negative = this.model.negativeFilter();
 
-        // application state changed, the view MUST be
-        // updated
-        this.view.showInputImage(ImageUtils.toBufferedImage(negative));
+            // application state changed, the view MUST be
+            // updated
+            this.view.showInputImage(ImageUtils.toBufferedImage(negative));
+        } catch (ImageNotFoundException e) {
+            // mostrar un error al usuario
+            this.view.showInfoDialogue(e.getMessage());
+        } catch (Exception e) {
+            // mostrar el error al usuario
+        }
+    }
+
+    private void handleGrayscaleFilter() {
+        try {
+            Image negative = this.model.grayscaleFilter();
+
+            // application state changed, the view MUST be
+            // updated
+            this.view.showInputImage(ImageUtils.toBufferedImage(negative));
+        } catch (ImageNotFoundException e) {
+            // mostrar un error al usuario
+            this.view.showInfoDialogue(e.getMessage());
+        } catch (Exception e) {
+            // mostrar el error al usuario
+        }
+    }
+
+    private void handleUndoButton() {
+        Image img = this.model.undo();
+        view.showInputImage(ImageUtils.toBufferedImage(img));
     }
 
     // call the view to re-draw the application state

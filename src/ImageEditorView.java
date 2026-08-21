@@ -11,6 +11,7 @@ public class ImageEditorView extends JFrame {
     JButton loadImageButton = new JButton("Load Image");
     JButton negativeFilterButton = new JButton("Negative");
     JButton grayscaleFilterButton = new JButton("Grayscale");
+    JButton undoButton = new JButton("<- Undo");
     JFileChooser inputImageChooser = new JFileChooser();
     FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "png", "jpeg", "jpg");
     ImagePanel imagePanel;
@@ -35,6 +36,7 @@ public class ImageEditorView extends JFrame {
         // negative, grayscale
         mainPanel.add(negativeFilterButton);
         mainPanel.add(grayscaleFilterButton);
+        mainPanel.add(undoButton);
 
         // at last, add the main panel to the JFrame
         add(mainPanel);
@@ -49,8 +51,16 @@ public class ImageEditorView extends JFrame {
         negativeFilterButton.addActionListener(listener);
     }
 
+    public void addGrayscaleListener(ActionListener listener) {
+        grayscaleFilterButton.addActionListener(listener);
+    }
+
     public void addInputImageChooserListener(ActionListener listener) {
         inputImageChooser.addActionListener(listener);
+    }
+
+    public void addUndoListener(ActionListener listener) {
+        undoButton.addActionListener(listener);
     }
 
     // ############### A section to trigger actions in the GUI ##################
@@ -72,5 +82,29 @@ public class ImageEditorView extends JFrame {
         imagePanel.setPreferredSize(new Dimension(600, 400));
         mainPanel.add(imagePanel);
         pack();
+    }
+
+    public void showMessageDialog(String msg) {
+        JOptionPane.showMessageDialog(
+                this,
+                msg,
+                "Info",
+                JOptionPane.PLAIN_MESSAGE);
+    }
+
+    public void showInfoDialogue(String msg) {
+        JOptionPane.showMessageDialog(
+                this,
+                msg,
+                "Info",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showErrorDialogue(String msg) {
+        JOptionPane.showMessageDialog(
+                this,
+                msg,
+                "ERROR!",
+                JOptionPane.ERROR_MESSAGE);
     }
 }
