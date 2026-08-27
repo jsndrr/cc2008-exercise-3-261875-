@@ -1,19 +1,14 @@
 import com.formdev.flatlaf.FlatLightLaf;
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 public class Main {
-  public static void main(String[] args) {
-    // must come before any component is created
-    FlatLightLaf.setup();
-
-    SwingUtilities.invokeLater(() -> {
-      // Instantiate our 3 separate MVC classes
-      ImageEditorModel model = new ImageEditorModel();
-      ImageEditorView view = new ImageEditorView();
-      new ImageEditorController(model, view);
-
-      // all ready, make the window visible
-      view.setVisible(true);
-    });
-  }
+    public static void main(String[] args) {
+        FlatLightLaf.setup();
+        SwingUtilities.invokeLater(() -> {
+            ImageEditorModel model = new ImageEditorModel();
+            ImageEditorView view = new ImageEditorView();
+            new ImageEditorController(model, view);
+            view.setVisible(true);
+        });
+    }
 }

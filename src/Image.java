@@ -1,7 +1,3 @@
-/*
-* An image is a matrix of pixels.
-* Create getters and setters appropiately to get and set individual pixels.
-*/
 public class Image {
     private Pixel[][] pixels;
 
@@ -27,5 +23,15 @@ public class Image {
 
     public void setPixel(int row, int col, Pixel p) {
         this.pixels[row][col] = p;
+    }
+
+    public Image cloneImage() {
+        Image copy = new Image(getHeight(), getWidth());
+        for (int r = 0; r < getHeight(); r++) {
+            for (int c = 0; c < getWidth(); c++) {
+                copy.setPixel(r, c, getPixel(r, c).copy());
+            }
+        }
+        return copy;
     }
 }

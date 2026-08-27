@@ -2,58 +2,67 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImageEditorModel {
-    // The name of the input file that the user chose.
     private String inputFileName;
-    // The ImageEditor holds all the logic for the image transformations.
     private ImageEditor editor;
-    // image filtering history
     private List<Image> history;
 
     public ImageEditorModel() {
         this.history = new ArrayList<>();
     }
 
-    public String getInputFileName() {
-        return this.inputFileName;
-    }
+    public String getInputFileName() { return inputFileName; }
+    public void setInputFileName(String inputFileName) { this.inputFileName = inputFileName; }
 
-    public void setInputFileName(String inputFileName) {
-        this.inputFileName = inputFileName;
-    }
-
-    public Image getInputImage() {
-        return this.history.getFirst();
+    public Image getCurrentImage() throws ImageNotFoundException {
+        if (history.isEmpty()) {
+            throw new ImageNotFoundException("No se ha cargado ninguna imagen.");
+        }
+        return history.get(history.size() - 1);
     }
 
     public void setInputImage(Image inputImage) {
+        history.clear(); // Reiniciar historial al cargar una nueva imagen
         history.add(inputImage);
         this.editor = new ImageEditor(inputImage);
     }
 
+    private void applyFilterResult(Image result) {
+        history.add(result);
+        this.editor = new ImageEditor(result);
+    }
+
     public Image negativeFilter() throws ImageNotFoundException {
-        if (this.history.isEmpty()) {
-            throw new ImageNotFoundException("image not found");
-        }
-
-        Image negative = this.editor.negative();
-        history.add(negative);
-
-        return history.getLast();
+        getCurrentImage();
+        Image result = editor.negative();
+        applyFilterResult(result);
+        return result;
     }
 
     public Image grayscaleFilter() throws ImageNotFoundException {
-        if (this.history.isEmpty()) {
-            throw new ImageNotFoundException("image not found");
-        }
-
-        Image img = this.editor.grayscale();
-        history.add(img);
-
-        return history.getLast();
+        getCurrentImage();
+        Image result = editor.grayscale();
+        applyFilterResult(result);
+        return result;
     }
 
-    public Image undo() {
-        history.removeLast();
-        return history.getLast();
+    public Image rotateFilter() throws ImageNotFoundException {
+        getCurrentImage();
+        Image result = editor.rotate90();
+        applyFilterResult(result);
+        return result;
+    }
+
+    public Image undo() throws EmptyHistoryException {
+        if (history.size() <= 1) {
+            throw new EmptyHistoryException("No hay mas operaciones previas para deshacer.");
+        }
+        history.remove(history.size() - 1);
+        Image previous = history.get(history.size() - 1);
+        this.editor = new ImageEditor(previous);
+        return previous;
+    }
+
+    public int getHistorySize() {
+        return history.size();
     }
 }

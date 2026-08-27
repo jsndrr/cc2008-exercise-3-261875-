@@ -8,70 +8,55 @@ public class ImageEditorController {
         this.view = view;
         this.model = model;
 
-        // hookup action listeners
         this.view.addLoadImageListener(e -> handleLoadImage());
         this.view.addNegativeListener(e -> handleNegativeFilter());
         this.view.addGrayscaleListener(e -> handleGrayscaleFilter());
         this.view.addUndoListener(e -> handleUndoButton());
     }
 
-    public void handleLoadImage() {
+    private void handleLoadImage() {
         File selectedFile = view.showInputImageChooser();
-        if (selectedFile == null) {
-            return;
-        }
+        if (selectedFile == null) return;
 
         try {
-            // mutate the application state
             model.setInputFileName(selectedFile.getAbsolutePath());
             model.setInputImage(ImageUtils.load(selectedFile.getAbsolutePath()));
+            refresh();
         } catch (Exception e) {
-            // view.showErrorDialog("couldn't load image: " + e.getMessage());
+            view.showErrorDialogue("Error al cargar la imagen: " + e.getMessage());
         }
-
-        // we updated the state of the model, we must re-draw the view layer
-        refresh();
     }
 
-    // What do we want to do when someone presses the
-    // negative filter button?
     private void handleNegativeFilter() {
         try {
-            Image negative = this.model.negativeFilter();
-
-            // application state changed, the view MUST be
-            // updated
-            this.view.showInputImage(ImageUtils.toBufferedImage(negative));
+            Image negative = model.negativeFilter();
+            view.showInputImage(ImageUtils.toBufferedImage(negative));
         } catch (ImageNotFoundException e) {
-            // mostrar un error al usuario
-            this.view.showInfoDialogue(e.getMessage());
-        } catch (Exception e) {
-            // mostrar el error al usuario
+            view.showErrorDialogue(e.getMessage());
         }
     }
 
     private void handleGrayscaleFilter() {
         try {
-            Image negative = this.model.grayscaleFilter();
-
-            // application state changed, the view MUST be
-            // updated
-            this.view.showInputImage(ImageUtils.toBufferedImage(negative));
+            Image gray = model.grayscaleFilter();
+            view.showInputImage(ImageUtils.toBufferedImage(gray));
         } catch (ImageNotFoundException e) {
-            // mostrar un error al usuario
-            this.view.showInfoDialogue(e.getMessage());
-        } catch (Exception e) {
-            // mostrar el error al usuario
+            view.showErrorDialogue(e.getMessage());
         }
     }
 
     private void handleUndoButton() {
-        Image img = this.model.undo();
-        view.showInputImage(ImageUtils.toBufferedImage(img));
+        try {
+            Image previous = model.undo();
+            view.showInputImage(ImageUtils.toBufferedImage(previous));
+        } catch (EmptyHistoryException e) {
+            view.showErrorDialogue(e.getMessage());
+        }
     }
 
-    // call the view to re-draw the application state
     private void refresh() {
-        view.showInputImage(ImageUtils.toBufferedImage(model.getInputImage()));
+        try {
+            view.showInputImage(ImageUtils.toBufferedImage(model.getCurrentImage()));
+        } catch (ImageNotFoundException ignored) {}
     }
 }
